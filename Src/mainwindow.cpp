@@ -72,18 +72,24 @@ void MainWindow::addNewTab(QString fileName)
         }
     }
 
-    TextEditor *eidtor = new TextEditor(fileName);
-    ui->tabWidget->addTab(eidtor, file);
+    TextEditor *editor = new TextEditor(fileName);
+    ui->tabWidget->addTab(editor, file);
     int index = ui->tabWidget->count() - 1;
     ui->tabWidget->setCurrentIndex(index);
+    ui->tabWidget->tabBar()->setTabToolTip(index, editor->getCompleteFileName());
 
-    connect(eidtor, &TextEditor::modificationChanged, this, [=](bool isModify) {
+    connect(editor, &TextEditor::modificationChanged, this, [=](bool isModify) {
         QString tabTitle = isModify ? ("*" + file) : file;
         ui->tabWidget->tabBar()->setTabText(index, tabTitle);
     });
-    connect(eidtor->document(), &QTextDocument::modificationChanged, this, [=](bool isModify) {
-        QString tabTitle = isModify ? ("*" + file) : file;
+    //    connect(eidtor->document(), &QTextDocument::modificationChanged, this, [=](bool isModify) {
+    //        QString tabTitle = isModify ? ("*" + file) : file;
+    //        ui->tabWidget->tabBar()->setTabText(index, tabTitle);
+    //    });
+    connect(editor, &TextEditor::saveFinished, this, [=]() {
+        QString tabTitle = editor->getFileName();
         ui->tabWidget->tabBar()->setTabText(index, tabTitle);
+        ui->tabWidget->tabBar()->setTabToolTip(index, editor->getCompleteFileName());
     });
 }
 

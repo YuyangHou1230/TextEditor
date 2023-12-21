@@ -6,6 +6,7 @@
 class LineNumberWidget;
 class TextEditor : public QPlainTextEdit
 {
+    Q_OBJECT
 public:
     TextEditor(QString fileName, QWidget *parent = nullptr);
 
@@ -15,7 +16,11 @@ public:
     bool saveFile();
     bool saveAsFile();
 
+    QString getCompleteFileName() const;
     QString getFileName() const;
+
+signals:
+    void saveFinished();
 
 public slots:
     void updateLineNumber(const QRect &rect, int dy);

@@ -111,6 +111,7 @@ bool TextEditor::saveFile()
     file.close();
 
     document()->setModified(false);
+    emit saveFinished();
 
     return true;
 }
@@ -137,8 +138,26 @@ bool TextEditor::saveAsFile()
     file.close();
 
     document()->setModified(false);
+    emit saveFinished();
 
     return true;
+}
+
+QString TextEditor::getCompleteFileName() const
+{
+    return m_fileName;
+}
+
+QString TextEditor::getFileName() const
+{
+    QFileInfo info(m_fileName);
+    QString   name;
+    if ( info.exists() )
+    {
+        name = info.fileName();
+    }
+
+    return name;
 }
 
 void TextEditor::updateLineNumber(const QRect &rect, int dy)
@@ -200,11 +219,6 @@ int TextEditor::getLineNumberWidth()
     defalut     = qMax(22, defalut);
 
     return defalut;
-}
-
-QString TextEditor::getFileName() const
-{
-    return m_fileName;
 }
 
 LineNumberWidget::LineNumberWidget(TextEditor *editor)
