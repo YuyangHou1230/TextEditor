@@ -39,13 +39,19 @@
    <property name="minimumSize">
     <size>
      <width>0</width>
-     <height>35</height>
+     <height>0</height>
     </size>
    </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
    <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <property name="floatable">
     <bool>false</bool>
    </property>
    <attribute name="toolBarArea">
@@ -58,18 +64,31 @@
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
    <addaction name="actionSaveAs"/>
+   <addaction name="actionSearch"/>
   </widget>
   <action name="actionNew">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Resources/Icon/newFileIcon.png</normaloff>../Resources/Icon/newFileIcon.png</iconset>
+   </property>
    <property name="text">
-    <string>新建文本</string>
+    <string>新建</string>
    </property>
   </action>
   <action name="actionOpen">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Resources/Icon/openFileIcon.png</normaloff>../Resources/Icon/openFileIcon.png</iconset>
+   </property>
    <property name="text">
-    <string>打开文件</string>
+    <string>打开</string>
    </property>
   </action>
   <action name="actionSave">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Resources/Icon/saveIcon.png</normaloff>../Resources/Icon/saveIcon.png</iconset>
+   </property>
    <property name="text">
     <string>保存</string>
    </property>
@@ -77,6 +96,15 @@
   <action name="actionSaveAs">
    <property name="text">
     <string>另存为</string>
+   </property>
+  </action>
+  <action name="actionSearch">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Resources/Icon/searchFileIcon.png</normaloff>../Resources/Icon/searchFileIcon.png</iconset>
+   </property>
+   <property name="text">
+    <string>搜索</string>
    </property>
   </action>
  </widget>

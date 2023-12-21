@@ -18,10 +18,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    searchwidget.cpp \
     texteditor.cpp
 
 HEADERS += \
     mainwindow.h \
+    searchwidget.h \
     texteditor.h
 
 FORMS += \

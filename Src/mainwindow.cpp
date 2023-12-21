@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QTabBar>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -16,7 +17,16 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(ui->tabWidget);
     ui->tabWidget->tabBar()->setTabsClosable(true);
 
+    QPushButton *btnMenu = new QPushButton();
+    //    btnMenu->setMinimumWidth(60);
+    //    btnMenu->setMaximumWidth(60);
+    ui->tabWidget->setCornerWidget(btnMenu, Qt::Corner::TopLeftCorner);
+
+    m_searchWidget = new SearchWidget(this);
+    m_searchWidget->hide();
+
     initConnect();
+    //    m_searchWidget->raise();
 }
 
 MainWindow::~MainWindow()
@@ -46,6 +56,77 @@ void MainWindow::slotTabCloseClicked(int index)
     ui->tabWidget->removeTab(index);
 }
 
+void MainWindow::slotSearchChanged(const QString &text, bool direction, bool reset)
+{
+    QString search_text = text;
+    if ( search_text.trimmed().isEmpty() )
+    {
+        //        QMessageBox::information(this, tr("Empty search field"), tr("The search field is empty."));
+        return;
+    }
+
+    TextEditor *editor = dynamic_cast<TextEditor *>(ui->tabWidget->currentWidget());
+    if ( editor == nullptr )
+    {
+        return;
+    }
+
+    QTextDocument *document = editor->document();
+    QTextCursor    cur      = editor->textCursor();
+
+    static QList<QTextCursor> highlight_cursors;
+    static int                index = 0;
+    if ( reset )
+    {
+        // 遍历搜索所有的
+        cur = editor->textCursor();
+        cur.clearSelection();
+        cur.movePosition(QTextCursor::Start);
+
+        highlight_cursors.clear();
+        QTextCursor highlight_cursor = document->find(search_text);
+        while ( !highlight_cursor.isNull() )
+        {
+            highlight_cursors.append(highlight_cursor);
+            highlight_cursor = document->find(search_text, highlight_cursor);
+        }
+    }
+    else
+    {
+        if ( direction )
+        {
+            index += 1;
+        }
+        else
+        {
+            index -= 1;
+        }
+        index = qMax(0, index);
+
+        index = index % highlight_cursors.size();
+    }
+
+    m_searchWidget->setSearchResult(index, highlight_cursors.size());
+
+    QList<QTextEdit::ExtraSelection> list; /* = editor->extraSelections();*/
+
+    if ( highlight_cursors.size() > 0 && index < highlight_cursors.size() )
+    {
+        QTextCharFormat highlightFormat;
+        highlightFormat.setBackground(Qt::yellow);
+        highlightFormat.setForeground(Qt::blue);
+        QTextEdit::ExtraSelection selection;
+        selection.cursor = highlight_cursors[index];
+        selection.format = highlightFormat;
+
+        list.append(selection);
+
+        editor->setTextCursor(highlight_cursors[index]);
+
+        editor->setExtraSelections(list);
+    }
+}
+
 void MainWindow::on_actionNew_triggered()
 {
     addNewTab();
@@ -54,6 +135,7 @@ void MainWindow::on_actionNew_triggered()
 void MainWindow::initConnect()
 {
     connect(ui->tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::slotTabCloseClicked);
+    connect(m_searchWidget, &SearchWidget::searchText, this, &MainWindow::slotSearchChanged);
 }
 
 void MainWindow::addNewTab(QString fileName)
@@ -122,4 +204,14 @@ void MainWindow::on_actionSaveAs_triggered()
         return;
     }
     editor->saveAsFile();
+}
+
+void MainWindow::on_actionSearch_triggered()
+{
+    // 计算搜索框的位置
+    QPoint topRight = mapToGlobal(this->rect().topRight());
+    qDebug() << topRight;
+    m_searchWidget->move(width() - m_searchWidget->width() - 50, 10);
+    m_searchWidget->raise();
+    m_searchWidget->show();
 }

@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "searchwidget.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
@@ -21,6 +23,8 @@ public:
 private slots:
     void slotTabCloseClicked(int index);
 
+    void slotSearchChanged(const QString &text, bool direction, bool reset);
+
     void on_actionNew_triggered();
 
     void on_actionOpen_triggered();
@@ -29,6 +33,8 @@ private slots:
 
     void on_actionSaveAs_triggered();
 
+    void on_actionSearch_triggered();
+
 private:
     void initConnect();
 
@@ -36,5 +42,7 @@ private:
 
 private:
     Ui::MainWindow *ui;
+
+    SearchWidget *m_searchWidget;
 };
 #endif   // MAINWINDOW_H
