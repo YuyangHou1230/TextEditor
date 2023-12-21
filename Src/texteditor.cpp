@@ -1,5 +1,7 @@
 #include "texteditor.h"
 
+#include "highlighter.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QFileDialog>
@@ -20,6 +22,12 @@ TextEditor::TextEditor(QString fileName, QWidget *parent)
     highlightCurrentLine();
 
     loadFile(fileName);
+}
+
+TextEditor::~TextEditor()
+{
+    delete m_lineNumberWidget;
+    m_lineNumberWidget = nullptr;
 }
 
 void TextEditor::lineNumberPaintEvent(QPaintEvent *e)
@@ -210,6 +218,7 @@ void TextEditor::initConnect()
 
 void TextEditor::initHighlighter()
 {
+    new Highlighter(document());
 }
 
 int TextEditor::getLineNumberWidth()

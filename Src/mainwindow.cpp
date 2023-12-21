@@ -46,7 +46,7 @@ void MainWindow::slotTabCloseClicked(int index)
     if ( editor->document()->isModified() )
     {
         QMessageBox::StandardButton btn = QMessageBox::question(this, "提示", "修改尚未保存，是否仍要关闭？");
-        if ( btn != QMessageBox::Ok )
+        if ( btn != QMessageBox::Yes )
         {
             return;
         }
@@ -54,6 +54,7 @@ void MainWindow::slotTabCloseClicked(int index)
 
     qInfo() << "close File:" << ui->tabWidget->tabBar()->tabText(index);
     ui->tabWidget->removeTab(index);
+    delete editor;
 }
 
 void MainWindow::slotSearchChanged(const QString &text, bool direction, bool reset)
